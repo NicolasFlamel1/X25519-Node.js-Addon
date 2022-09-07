@@ -1,8 +1,8 @@
 {
 	"name": "@nicolasflamel/x25519-native",
-	"version": "0.0.6",
+	"version": "0.0.8",
 	"description": "Node.js addon for parts of SUPERCOP's X25519 implementation",
-	"main": "./build/Release/X25519.node",
+	"main": "./main.js",
 	"gypfile": true,
 	"scripts": {
 		"preinstall": "wget \"https://bench.cr.yp.to/supercop/supercop-20220213.tar.xz\" && unxz < \"./supercop-20220213.tar.xz\" | tar -xf - && wget -O \"./x25519-wrapper.zip\" \"https://github.com/NicolasFlamel1/X25519-WASM-Wrapper/archive/refs/heads/master.zip\" && unzip \"./x25519-wrapper.zip\"",
@@ -19,5 +19,8 @@
 	"license": "MIT",
 	"bugs": {
 		"url": "https://github.com/NicolasFlamel1/X25519-Node.js-Addon/issues"
+	},
+	"dependencies": {
+		"bindings": "^1.5.0"
 	}
 }
