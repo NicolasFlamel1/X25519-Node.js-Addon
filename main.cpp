@@ -1,7 +1,7 @@
 // Header files
 #include <new>
 #include <node_api.h>
-#include <utility>
+#include <tuple>
 #include "./X25519-WASM-Wrapper-master/main.cpp"
 
 using namespace std;
@@ -25,7 +25,7 @@ static napi_value publicKeyFromEd25519PublicKey(napi_env environment, napi_callb
 static napi_value sharedSecretKeyFromSecretKeyAndPublicKey(napi_env environment, napi_callback_info arguments);
 
 // Uint8 array to buffer
-static pair<const uint8_t *, size_t> uint8ArrayToBuffer(napi_env environment, napi_value uint8Array);
+static tuple<uint8_t *, size_t, bool> uint8ArrayToBuffer(napi_env environment, napi_value uint8Array);
 
 // Buffer to uint8 array
 static napi_value bufferToUint8Array(napi_env environment, uint8_t *data, size_t size);
@@ -92,8 +92,8 @@ napi_value secretKeyFromEd25519SecretKey(napi_env environment, napi_callback_inf
 	}
 	
 	// Check if getting Ed25519 secret key from arguments failed
-	const pair<const uint8_t *, size_t> ed25519SecretKey = uint8ArrayToBuffer(environment, argv[0]);
-	if(!ed25519SecretKey.first) {
+	const tuple<uint8_t *, size_t, bool> ed25519SecretKey = uint8ArrayToBuffer(environment, argv[0]);
+	if(!get<2>(ed25519SecretKey)) {
 	
 		// Return operation failed
 		return OPERATION_FAILED;
@@ -101,7 +101,7 @@ napi_value secretKeyFromEd25519SecretKey(napi_env environment, napi_callback_inf
 	
 	// Check if getting secret key from Ed25519 secret key failed
 	uint8_t secretKey[secretKeySize()];
-	if(!secretKeyFromEd25519SecretKey(secretKey, ed25519SecretKey.first, ed25519SecretKey.second)) {
+	if(!secretKeyFromEd25519SecretKey(secretKey, get<0>(ed25519SecretKey), get<1>(ed25519SecretKey))) {
 	
 		// Return operation failed
 		return OPERATION_FAILED;
@@ -124,8 +124,8 @@ napi_value publicKeyFromEd25519PublicKey(napi_env environment, napi_callback_inf
 	}
 	
 	// Check if getting Ed25519 public key from arguments failed
-	const pair<const uint8_t *, size_t> ed25519PublicKey = uint8ArrayToBuffer(environment, argv[0]);
-	if(!ed25519PublicKey.first) {
+	const tuple<uint8_t *, size_t, bool> ed25519PublicKey = uint8ArrayToBuffer(environment, argv[0]);
+	if(!get<2>(ed25519PublicKey)) {
 	
 		// Return operation failed
 		return OPERATION_FAILED;
@@ -133,7 +133,7 @@ napi_value publicKeyFromEd25519PublicKey(napi_env environment, napi_callback_inf
 	
 	// Check if getting public key from Ed25519 public key failed
 	uint8_t publicKey[publicKeySize()];
-	if(!publicKeyFromEd25519PublicKey(publicKey, ed25519PublicKey.first, ed25519PublicKey.second)) {
+	if(!publicKeyFromEd25519PublicKey(publicKey, get<0>(ed25519PublicKey), get<1>(ed25519PublicKey))) {
 	
 		// Return operation failed
 		return OPERATION_FAILED;
@@ -156,16 +156,16 @@ napi_value sharedSecretKeyFromSecretKeyAndPublicKey(napi_env environment, napi_c
 	}
 	
 	// Check if getting secret key from arguments failed
-	const pair<const uint8_t *, size_t> secretKey = uint8ArrayToBuffer(environment, argv[0]);
-	if(!secretKey.first) {
+	const tuple<uint8_t *, size_t, bool> secretKey = uint8ArrayToBuffer(environment, argv[0]);
+	if(!get<2>(secretKey)) {
 	
 		// Return operation failed
 		return OPERATION_FAILED;
 	}
 	
 	// Check if getting public key from arguments failed
-	const pair<const uint8_t *, size_t> publicKey = uint8ArrayToBuffer(environment, argv[1]);
-	if(!publicKey.first) {
+	const tuple<uint8_t *, size_t, bool> publicKey = uint8ArrayToBuffer(environment, argv[1]);
+	if(!get<2>(publicKey)) {
 	
 		// Return operation failed
 		return OPERATION_FAILED;
@@ -173,7 +173,7 @@ napi_value sharedSecretKeyFromSecretKeyAndPublicKey(napi_env environment, napi_c
 	
 	// Check if getting shared secret key from secret key and public key failed
 	uint8_t sharedSecretKey[sharedSecretKeySize()];
-	if(!sharedSecretKeyFromSecretKeyAndPublicKey(sharedSecretKey, secretKey.first, secretKey.second, publicKey.first, publicKey.second)) {
+	if(!sharedSecretKeyFromSecretKeyAndPublicKey(sharedSecretKey, get<0>(secretKey), get<1>(secretKey), get<0>(publicKey), get<1>(publicKey))) {
 	
 		// Return operation failed
 		return OPERATION_FAILED;
@@ -184,14 +184,14 @@ napi_value sharedSecretKeyFromSecretKeyAndPublicKey(napi_env environment, napi_c
 }
 
 // Uint8 array to buffer
-pair<const uint8_t *, size_t> uint8ArrayToBuffer(napi_env environment, napi_value uint8Array) {
+tuple<uint8_t *, size_t, bool> uint8ArrayToBuffer(napi_env environment, napi_value uint8Array) {
 
 	// Check if uint8 array isn't a typed array
 	bool isTypedArray;
 	if(napi_is_typedarray(environment, uint8Array, &isTypedArray) != napi_ok || !isTypedArray) {
 	
-		// Return nothing
-		return {nullptr, 0};
+		// Return failure
+		return {nullptr, 0, false};
 	}
 	
 	// Check if uint8 array isn't a uint8 array
@@ -200,12 +200,12 @@ pair<const uint8_t *, size_t> uint8ArrayToBuffer(napi_env environment, napi_valu
 	uint8_t *data;
 	if(napi_get_typedarray_info(environment, uint8Array, &type, &size, reinterpret_cast<void **>(&data), nullptr, nullptr) != napi_ok || type != napi_uint8_array) {
 	
-		// Return nothing
-		return {nullptr, 0};
+		// Return failure
+		return {nullptr, 0, false};
 	}
 	
 	// Return data and size
-	return {data, size};
+	return {data, size, true};
 }
 
 // Buffer to uint8 array
