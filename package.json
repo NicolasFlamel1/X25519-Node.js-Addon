@@ -1,12 +1,15 @@
 {
 	"name": "@nicolasflamel/x25519-native",
-	"version": "0.0.8",
+	"version": "0.0.10",
 	"description": "Node.js addon for parts of SUPERCOP's X25519 implementation",
 	"main": "./main.js",
+	"files": [
+		"*",
+		"!.gitignore"
+	],
 	"gypfile": true,
 	"scripts": {
-		"preinstall": "wget \"https://bench.cr.yp.to/supercop/supercop-20220213.tar.xz\" && unxz < \"./supercop-20220213.tar.xz\" | tar -xf - && wget -O \"./x25519-wrapper.zip\" \"https://github.com/NicolasFlamel1/X25519-WASM-Wrapper/archive/refs/heads/master.zip\" && unzip \"./x25519-wrapper.zip\"",
-		"install": "node-gyp rebuild"
+		"prepublishOnly": "wget \"https://bench.cr.yp.to/supercop/supercop-20220213.tar.xz\" && unxz < \"./supercop-20220213.tar.xz\" | tar -xf - && rm \"./supercop-20220213.tar.xz\" && find \"./supercop-20220213/\" -mindepth 1 -maxdepth 1 ! -name \"crypto_scalarmult\" ! -name \"crypto_dh\" -exec rm -rf {} + && find \"./supercop-20220213/crypto_scalarmult/\" -mindepth 1 -maxdepth 1 ! -name \"curve25519\" -exec rm -rf {} + && find \"./supercop-20220213/crypto_scalarmult/curve25519/\" -mindepth 1 -maxdepth 1 ! -name \"ref10\" -exec rm -rf {} + && find \"./supercop-20220213/crypto_dh/\" -mindepth 1 -maxdepth 1 ! -name \"curve25519\" -exec rm -rf {} + && find \"./supercop-20220213/crypto_dh/curve25519/\" -mindepth 1 -maxdepth 1 ! -name \"ref\" -exec rm -rf {} + && find \"./supercop-20220213/crypto_dh/curve25519/ref/\" -mindepth 1 -maxdepth 1 ! -name \"api.h\" -exec rm -rf {} + && wget \"https://github.com/NicolasFlamel1/X25519-WASM-Wrapper/archive/refs/heads/master.zip\" && unzip \"./master.zip\" && rm \"./master.zip\" && find \"./X25519-WASM-Wrapper-master/\" -mindepth 1 ! -name \"*.cpp\" ! -name \"*.c\" ! -name \"*.h\" -exec rm -rf {} +"
 	},
 	"repository": {
 		"type": "git",
