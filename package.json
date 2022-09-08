@@ -1,6 +1,6 @@
 {
 	"name": "@nicolasflamel/x25519-native",
-	"version": "0.0.10",
+	"version": "0.0.11",
 	"description": "Node.js addon for parts of SUPERCOP's X25519 implementation",
 	"main": "./main.js",
 	"files": [
@@ -22,8 +22,5 @@
 	"license": "MIT",
 	"bugs": {
 		"url": "https://github.com/NicolasFlamel1/X25519-Node.js-Addon/issues"
-	},
-	"dependencies": {
-		"bindings": "^1.5.0"
 	}
 }
