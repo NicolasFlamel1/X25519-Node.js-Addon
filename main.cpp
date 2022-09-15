@@ -1,8 +1,15 @@
 // Header files
+#include <cstring>
 #include <new>
 #include <node_api.h>
 #include <tuple>
-#include "./X25519-WASM-Wrapper-master/main.cpp"
+
+// X25519 namespace
+namespace X25519 {
+
+	// Header files
+	#include "./X25519-WASM-Wrapper-master/main.cpp"
+}
 
 using namespace std;
 
@@ -100,8 +107,8 @@ napi_value secretKeyFromEd25519SecretKey(napi_env environment, napi_callback_inf
 	}
 	
 	// Check if getting secret key from Ed25519 secret key failed
-	uint8_t secretKey[secretKeySize()];
-	if(!secretKeyFromEd25519SecretKey(secretKey, get<0>(ed25519SecretKey), get<1>(ed25519SecretKey))) {
+	uint8_t secretKey[X25519::secretKeySize()];
+	if(!X25519::secretKeyFromEd25519SecretKey(secretKey, get<0>(ed25519SecretKey), get<1>(ed25519SecretKey))) {
 	
 		// Return operation failed
 		return OPERATION_FAILED;
@@ -132,8 +139,8 @@ napi_value publicKeyFromEd25519PublicKey(napi_env environment, napi_callback_inf
 	}
 	
 	// Check if getting public key from Ed25519 public key failed
-	uint8_t publicKey[publicKeySize()];
-	if(!publicKeyFromEd25519PublicKey(publicKey, get<0>(ed25519PublicKey), get<1>(ed25519PublicKey))) {
+	uint8_t publicKey[X25519::publicKeySize()];
+	if(!X25519::publicKeyFromEd25519PublicKey(publicKey, get<0>(ed25519PublicKey), get<1>(ed25519PublicKey))) {
 	
 		// Return operation failed
 		return OPERATION_FAILED;
@@ -172,8 +179,8 @@ napi_value sharedSecretKeyFromSecretKeyAndPublicKey(napi_env environment, napi_c
 	}
 	
 	// Check if getting shared secret key from secret key and public key failed
-	uint8_t sharedSecretKey[sharedSecretKeySize()];
-	if(!sharedSecretKeyFromSecretKeyAndPublicKey(sharedSecretKey, get<0>(secretKey), get<1>(secretKey), get<0>(publicKey), get<1>(publicKey))) {
+	uint8_t sharedSecretKey[X25519::sharedSecretKeySize()];
+	if(!X25519::sharedSecretKeyFromSecretKeyAndPublicKey(sharedSecretKey, get<0>(secretKey), get<1>(secretKey), get<0>(publicKey), get<1>(publicKey))) {
 	
 		// Return operation failed
 		return OPERATION_FAILED;
