@@ -3,7 +3,7 @@
 		{
 			"target_name": "X25519",
 			"sources": [
-				"./X25519-WASM-Wrapper-master/crypto_hash_sha512.c",
+				"./X25519-NPM-Package-master/crypto_hash_sha512.c",
 				"./main.cpp",
 				"./supercop-20220213/crypto_scalarmult/curve25519/ref10/base.c",
 				"./supercop-20220213/crypto_scalarmult/curve25519/ref10/fe_0.c",
@@ -22,7 +22,7 @@
 			],
 			"include_dirs": [
 				"./",
-				"./X25519-WASM-Wrapper-master/",
+				"./X25519-NPM-Package-master/",
 				"./supercop-20220213/crypto_scalarmult/curve25519/ref10/"
 			],
 			"defines": [
