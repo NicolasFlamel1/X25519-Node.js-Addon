@@ -26,7 +26,7 @@
 				"./supercop-20220213/crypto_scalarmult/curve25519/ref10/"
 			],
 			"defines": [
-				"CRYPTO_NAMESPACE(x)=x"
+				"CRYPTO_NAMESPACE="
 			]
 		}
 	]

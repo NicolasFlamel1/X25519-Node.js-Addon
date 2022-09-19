@@ -3,6 +3,10 @@
 #include <new>
 #include <node_api.h>
 #include <tuple>
+#include <vector>
+
+using namespace std;
+
 
 // X25519 namespace
 namespace X25519 {
@@ -10,8 +14,6 @@ namespace X25519 {
 	// Header files
 	#include "./X25519-NPM-Package-master/main.cpp"
 }
-
-using namespace std;
 
 
 // Constants
@@ -91,8 +93,8 @@ napi_value secretKeyFromEd25519SecretKey(napi_env environment, napi_callback_inf
 
 	// Check if not enough arguments were provided
 	size_t argc = 1;
-	napi_value argv[argc];
-	if(napi_get_cb_info(environment, arguments, &argc, argv, nullptr, nullptr) != napi_ok || argc != sizeof(argv) / sizeof(argv[0])) {
+	vector<napi_value> argv(argc);
+	if(napi_get_cb_info(environment, arguments, &argc, argv.data(), nullptr, nullptr) != napi_ok || argc != argv.size()) {
 	
 		// Return operation failed
 		return OPERATION_FAILED;
@@ -107,15 +109,15 @@ napi_value secretKeyFromEd25519SecretKey(napi_env environment, napi_callback_inf
 	}
 	
 	// Check if getting secret key from Ed25519 secret key failed
-	uint8_t secretKey[X25519::secretKeySize()];
-	if(!X25519::secretKeyFromEd25519SecretKey(secretKey, get<0>(ed25519SecretKey), get<1>(ed25519SecretKey))) {
+	vector<uint8_t> secretKey(X25519::secretKeySize());
+	if(!X25519::secretKeyFromEd25519SecretKey(secretKey.data(), get<0>(ed25519SecretKey), get<1>(ed25519SecretKey))) {
 	
 		// Return operation failed
 		return OPERATION_FAILED;
 	}
 	
 	// Return secret key as a uint8 array
-	return bufferToUint8Array(environment, secretKey, sizeof(secretKey));
+	return bufferToUint8Array(environment, secretKey.data(), secretKey.size());
 }
 
 // Public key from Ed25519 public key
@@ -123,8 +125,8 @@ napi_value publicKeyFromEd25519PublicKey(napi_env environment, napi_callback_inf
 
 	// Check if not enough arguments were provided
 	size_t argc = 1;
-	napi_value argv[argc];
-	if(napi_get_cb_info(environment, arguments, &argc, argv, nullptr, nullptr) != napi_ok || argc != sizeof(argv) / sizeof(argv[0])) {
+	vector<napi_value> argv(argc);
+	if(napi_get_cb_info(environment, arguments, &argc, argv.data(), nullptr, nullptr) != napi_ok || argc != argv.size()) {
 	
 		// Return operation failed
 		return OPERATION_FAILED;
@@ -139,15 +141,15 @@ napi_value publicKeyFromEd25519PublicKey(napi_env environment, napi_callback_inf
 	}
 	
 	// Check if getting public key from Ed25519 public key failed
-	uint8_t publicKey[X25519::publicKeySize()];
-	if(!X25519::publicKeyFromEd25519PublicKey(publicKey, get<0>(ed25519PublicKey), get<1>(ed25519PublicKey))) {
+	vector<uint8_t> publicKey(X25519::publicKeySize());
+	if(!X25519::publicKeyFromEd25519PublicKey(publicKey.data(), get<0>(ed25519PublicKey), get<1>(ed25519PublicKey))) {
 	
 		// Return operation failed
 		return OPERATION_FAILED;
 	}
 	
 	// Return public key as a uint8 array
-	return bufferToUint8Array(environment, publicKey, sizeof(publicKey));
+	return bufferToUint8Array(environment, publicKey.data(), publicKey.size());
 }
 
 // Shared secret key from secret key and public key
@@ -155,8 +157,8 @@ napi_value sharedSecretKeyFromSecretKeyAndPublicKey(napi_env environment, napi_c
 
 	// Check if not enough arguments were provided
 	size_t argc = 2;
-	napi_value argv[argc];
-	if(napi_get_cb_info(environment, arguments, &argc, argv, nullptr, nullptr) != napi_ok || argc != sizeof(argv) / sizeof(argv[0])) {
+	vector<napi_value> argv(argc);
+	if(napi_get_cb_info(environment, arguments, &argc, argv.data(), nullptr, nullptr) != napi_ok || argc != argv.size()) {
 	
 		// Return operation failed
 		return OPERATION_FAILED;
@@ -179,15 +181,15 @@ napi_value sharedSecretKeyFromSecretKeyAndPublicKey(napi_env environment, napi_c
 	}
 	
 	// Check if getting shared secret key from secret key and public key failed
-	uint8_t sharedSecretKey[X25519::sharedSecretKeySize()];
-	if(!X25519::sharedSecretKeyFromSecretKeyAndPublicKey(sharedSecretKey, get<0>(secretKey), get<1>(secretKey), get<0>(publicKey), get<1>(publicKey))) {
+	vector<uint8_t> sharedSecretKey(X25519::sharedSecretKeySize());
+	if(!X25519::sharedSecretKeyFromSecretKeyAndPublicKey(sharedSecretKey.data(), get<0>(secretKey), get<1>(secretKey), get<0>(publicKey), get<1>(publicKey))) {
 	
 		// Return operation failed
 		return OPERATION_FAILED;
 	}
 	
 	// Return shared secret key as a uint8 array
-	return bufferToUint8Array(environment, sharedSecretKey, sizeof(sharedSecretKey));
+	return bufferToUint8Array(environment, sharedSecretKey.data(), sharedSecretKey.size());
 }
 
 // Uint8 array to buffer
