@@ -1,6 +1,6 @@
 {
 	"name": "@nicolasflamel/x25519-native",
-	"version": "0.0.19",
+	"version": "0.0.20",
 	"description": "Node.js addon for parts of SUPERCOP's X25519 implementation",
 	"main": "./index.js",
 	"files": [
